@@ -3,6 +3,7 @@ package main.model;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @Table(name = "posts")
@@ -39,4 +40,11 @@ public class Post
 
     @NotNull
     private int voteCount;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "tag2post",
+            joinColumns = {@JoinColumn(name = "post_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "tag_id",referencedColumnName = "id")}
+    )
+    private Set<Tag> tags;
 }
