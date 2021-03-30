@@ -4,6 +4,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 
+
 @Entity
 @Table(name = "users")
 public class User
@@ -33,4 +34,5 @@ public class User
 
     @Column(length = 65535,columnDefinition="Text")
     private String photo;
+
 }
