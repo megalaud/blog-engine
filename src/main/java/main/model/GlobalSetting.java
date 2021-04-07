@@ -2,6 +2,7 @@ package main.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.Objects;
 
 @Entity
 @Table(name = "global_settings")
@@ -61,4 +62,5 @@ public class GlobalSetting
     public void setValue(String value) {
         this.value = value;
     }
+
 }

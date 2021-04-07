@@ -7,9 +7,11 @@ import main.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class PostService {
@@ -44,4 +46,26 @@ public class PostService {
     {
         return postRepository.count();
     }
+
+    public List<Integer> getAllYearPost()
+    {
+        return postRepository.getAllYearPost();
+    }
+
+    public Map<String, Long> getCountPostByDate(String year)
+    {
+        Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+        List<Object[]> result = postRepository.getCountPostByDate(year);
+        Map<String,Long> map = null;
+        if(result != null && !result.isEmpty())
+        {
+            map = new TreeMap<String,Long>();
+            for (Object[] object : result)
+            {
+                map.put(formatter.format(object[0]), ((BigInteger)object[1]).longValue());
+            }
+        }
+        return map;
+    }
+
 }

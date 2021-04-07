@@ -6,7 +6,8 @@ import main.repository.SettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Service
@@ -15,33 +16,40 @@ public class SettingsService
     @Autowired
     private SettingsRepository settingsRepository;
 
-    public SettingsResponse getGlobalSettings()
+    public SettingsResponse getSettings()
     {
-        GlobalSetting globalSetting1 = settingsRepository.getSettingsByCode("MULTIUSER_MODE");
-        GlobalSetting globalSetting2 = settingsRepository.getSettingsByCode("POST_PREMODERATION");
-        GlobalSetting globalSetting3 = settingsRepository.getSettingsByCode("STATISTICS_IS_PUBLIC");
+        Map<String, GlobalSetting> globalSettingHashMap = new HashMap<>();
+        Iterable<GlobalSetting> globalSettingIterable = settingsRepository.findAll();
 
-        if(globalSetting1 == null)
+        for (GlobalSetting globalSetting : globalSettingIterable)
         {
-            globalSetting1 = new GlobalSetting("MULTIUSER_MODE","Многопользовательский режим","NO");
-            settingsRepository.save(globalSetting1);
+            globalSettingHashMap.put(globalSetting.getCode(),globalSetting);
         }
-        if(globalSetting2 == null)
+
+        GlobalSetting globalSetting = null;
+        if (!globalSettingHashMap.containsKey("MULTIUSER_MODE"))
         {
-            globalSetting2 = new GlobalSetting("POST_PREMODERATION","Премодерация постов","NO");
-            settingsRepository.save(globalSetting2);
+            globalSetting = new GlobalSetting("MULTIUSER_MODE","Многопользовательский режим","NO");
+            globalSettingHashMap.put("MULTIUSER_MODE",globalSetting);
+            settingsRepository.save(globalSetting);
         }
-        if(globalSetting3 == null)
+        if (!globalSettingHashMap.containsKey("POST_PREMODERATION"))
         {
-            globalSetting3 = new GlobalSetting("STATISTICS_IS_PUBLIC","Показывать всем статистику блога","NO");
-            settingsRepository.save(globalSetting3);
+            globalSetting = new GlobalSetting("POST_PREMODERATION","Премодерация постов","NO");
+            globalSettingHashMap.put("POST_PREMODERATION",globalSetting);
+            settingsRepository.save(globalSetting);
+        }
+        if (!globalSettingHashMap.containsKey("STATISTICS_IS_PUBLIC"))
+        {
+            globalSetting = new GlobalSetting("STATISTICS_IS_PUBLIC","Показывать всем статистику блога","NO");
+            globalSettingHashMap.put("STATISTICS_IS_PUBLIC",globalSetting);
+            settingsRepository.save(globalSetting);
         }
 
         SettingsResponse settingsResponse = new SettingsResponse();
-        settingsResponse.setMultiuserMode(globalSetting1.getValue().equals("YES"));
-        settingsResponse.setPostPremoderation(globalSetting2.getValue().equals("YES"));
-        settingsResponse.setStatisticIsPublic(globalSetting3.getValue().equals("YES"));
-
+        settingsResponse.setMultiuserMode(globalSettingHashMap.get("MULTIUSER_MODE").getValue().equals("YES"));
+        settingsResponse.setPostPremoderation(globalSettingHashMap.get("POST_PREMODERATION").getValue().equals("YES"));
+        settingsResponse.setStatisticIsPublic(globalSettingHashMap.get("STATISTICS_IS_PUBLIC").getValue().equals("YES"));
         return settingsResponse;
     }
 }
